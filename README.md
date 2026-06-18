@@ -29,6 +29,17 @@ all handle Windows conventions (DLL next to the .exe, MSVC
 
 ---
 
+## Documentation
+
+| Document | Contents |
+|----------|---------|
+| [docs/model.md](docs/model.md) | Vehicle dynamics, reference path geometry, error definitions, PI controller equations |
+| [docs/numerics.md](docs/numerics.md) | Per-state RK4 integration, why it collapses to Euler, reference-path sampling |
+| [docs/api.md](docs/api.md) | Complete C ABI reference with all function signatures and a usage example |
+| [docs/python.md](docs/python.md) | Python bindings guide with `TrackConfig`, `Simulation` fields, and code examples |
+
+---
+
 ## What it computes
 
 ```
