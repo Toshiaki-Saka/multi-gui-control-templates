@@ -1,0 +1,19 @@
+# Build outputs
+core/build/
+frontend_qt/build/
+frontend_avalonia/TrackAvalonia/bin/
+frontend_avalonia/TrackAvalonia/obj/
+
+# Python
+frontend_python/__pycache__/
+frontend_python/*.pyc
+frontend_python/output_path_tracking_pi_tuned/
+
+# VS / Rider / JetBrains
+.vs/
+*.user
+*.suo
+.idea/
+
+# macOS
+.DS_Store
