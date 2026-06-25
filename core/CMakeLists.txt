@@ -52,8 +52,19 @@ set_target_properties(track_core PROPERTIES
     SOVERSION 1
 )
 
-add_executable(track_core_smoke EXCLUDE_FROM_ALL tools/smoke_test.cpp)
-target_link_libraries(track_core_smoke PRIVATE track_core)
+# Smoke / regression test — registered with CTest so `ctest` gates the
+# Python-reference metrics (path/heading errors, moment) on every build.
+option(TRACK_BUILD_TESTS "Build the smoke/regression test and register CTest" ON)
+if(TRACK_BUILD_TESTS)
+    enable_testing()
+    add_executable(track_core_smoke tools/smoke_test.cpp)
+    target_link_libraries(track_core_smoke PRIVATE track_core)
+    add_test(NAME smoke COMMAND track_core_smoke)
+    if(WIN32)
+        set_tests_properties(smoke PROPERTIES
+            ENVIRONMENT "PATH=$<TARGET_FILE_DIR:track_core>;$ENV{PATH}")
+    endif()
+endif()
 
 install(TARGETS track_core
         RUNTIME DESTINATION bin

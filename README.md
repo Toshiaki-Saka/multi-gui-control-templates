@@ -4,6 +4,18 @@ A C++ implementation of the planar-motion + PI path-tracking simulation
 from `planar_path_tracking_pi_tuned.py`, plus three GUI frontends that
 share the same native core.
 
+> **Where this sits in the family.** This is the **simplest** path-tracking
+> node: a plain PI controller (speed PI + lateral PI + yaw-rate damping +
+> look-ahead). It exists as a *minimal* showcase of the "one C++ core, three
+> language frontends (Qt6 / Avalonia / Python)" template. For more advanced
+> tracking, see the sibling projects:
+> - [`mpc_tracking`](../mpc_tracking) — same shared-core + 3-frontend template,
+>   but the controller is an LTV-MPC with a self-contained interior-point QP.
+> - [`path_tracking_oss`](../path_tracking_oss) — a header-only **comparison** of
+>   Pure Pursuit / Stanley / MPC / MPPI on the same path.
+>
+> Read `track` first for the architecture, then those for the control depth.
+
 ```
 ┌──────────────────────────────────────────────────────────────────────┐
 │            C++ core  (track_core.dll / .so / .dylib)                 │

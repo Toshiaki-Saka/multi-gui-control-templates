@@ -11,6 +11,7 @@ frontend_python/output_path_tracking_pi_tuned/
 
 # VS / Rider / JetBrains
 .vs/
+.vscode/
 *.user
 *.suo
 .idea/
