@@ -1,0 +1,75 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # Core library + numerical regression test. This is the gate: it builds the
+  # shared library and runs the smoke test via CTest, which checks the RK4
+  # solver against the scipy.odeint reference values (Δ < 1e-5) for 5 cases.
+  # ---------------------------------------------------------------------------
+  core:
+    name: core (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure
+        run: cmake -S core -B core/build -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        run: cmake --build core/build --config Release -j
+
+      - name: Test (CTest)
+        run: ctest --test-dir core/build -C Release --output-on-failure
+
+  # ---------------------------------------------------------------------------
+  # Frontend build checks (compile only, no GUI run). Each links the same core.
+  # ---------------------------------------------------------------------------
+  frontend-qt:
+    name: frontend-qt (ubuntu)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Qt6
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y qt6-base-dev cmake g++
+      - name: Build Qt frontend
+        run: |
+          cmake -S frontend_qt -B frontend_qt/build -DCMAKE_BUILD_TYPE=Release
+          cmake --build frontend_qt/build -j
+
+  frontend-avalonia:
+    name: frontend-avalonia (.NET 8)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Build core (Avalonia P/Invokes into it)
+        run: |
+          cmake -S core -B core/build -DCMAKE_BUILD_TYPE=Release
+          cmake --build core/build -j
+      - name: Build Avalonia frontend
+        run: dotnet build frontend_avalonia/MsdAvalonia -c Release
+
+  frontend-python:
+    name: frontend-python (3.9)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+      - name: Byte-compile Python frontend
+        run: python -m compileall -q frontend_python
