@@ -1,0 +1,85 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # Core library + regression test (CTest). The gate: build the Eigen-based
+  # core and run the 2-DOF regression test. Eigen comes from apt on Linux and
+  # vcpkg on Windows.
+  # ---------------------------------------------------------------------------
+  core:
+    name: core (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Eigen3 (Linux)
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y libeigen3-dev
+      - name: Install Eigen3 (Windows)
+        if: runner.os == 'Windows'
+        run: vcpkg install eigen3:x64-windows
+      - name: Configure (Linux)
+        if: runner.os == 'Linux'
+        run: cmake -S core -B core/build -DCMAKE_BUILD_TYPE=Release
+      - name: Configure (Windows)
+        if: runner.os == 'Windows'
+        run: >
+          cmake -S core -B core/build
+          -DCMAKE_TOOLCHAIN_FILE=$env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake
+      - name: Build
+        run: cmake --build core/build --config Release -j
+      - name: Test (CTest)
+        run: ctest --test-dir core/build -C Release --output-on-failure
+
+  # ---------------------------------------------------------------------------
+  # Frontend checks (no GUI run). Each shares the same core.
+  # ---------------------------------------------------------------------------
+  frontend-qt:
+    name: frontend-qt (ubuntu)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Qt6 + Eigen
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y qt6-base-dev libeigen3-dev cmake g++
+      - name: Build Qt frontend
+        run: |
+          cmake -S frontend_qt -B frontend_qt/build -DCMAKE_BUILD_TYPE=Release
+          cmake --build frontend_qt/build -j
+
+  frontend-avalonia:
+    name: frontend-avalonia (.NET 8)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Build core (Avalonia P/Invokes into it)
+        run: |
+          sudo apt-get update && sudo apt-get install -y libeigen3-dev
+          cmake -S core -B core/build -DCMAKE_BUILD_TYPE=Release
+          cmake --build core/build -j
+      - name: Build Avalonia frontend
+        run: dotnet build frontend_avalonia/TdofAvalonia -c Release
+
+  frontend-python:
+    name: frontend-python (3.10)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - name: Byte-compile Python frontend
+        run: python -m compileall -q frontend_python
