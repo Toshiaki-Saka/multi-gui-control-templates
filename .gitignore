@@ -1,0 +1,46 @@
+# Build directories
+build/
+build_*/
+*/build/
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+*.cmake.stamp
+
+# Compiled output
+*.exe
+*.dll
+*.so
+*.dylib
+*.pdb
+*.ilk
+*.lib
+*.exp
+*.obj
+*.o
+
+# .NET / Avalonia
+bin/
+obj/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Debug / scratch images (the README screenshot lives in docs/)
+/bad*.png
+/error.png
+/good.png
+/shot*.png
+/screenshot_*.png
+
+# Editor / OS
+.vs/
+.vscode/
+.claude/
+*.user
+.DS_Store
+Thumbs.db

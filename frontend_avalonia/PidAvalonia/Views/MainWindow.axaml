@@ -1,0 +1,152 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:views="clr-namespace:PidAvalonia.Views"
+        x:Class="PidAvalonia.Views.MainWindow"
+        Width="1100" Height="720"
+        Title="PID interactive (C# / Avalonia)">
+
+    <Grid RowDefinitions="*,Auto,Auto" Margin="6">
+
+        <!-- ============== TOP: plot (stretches to fill available space) ============== -->
+        <Border Grid.Row="0" BorderBrush="#888" BorderThickness="1" CornerRadius="2">
+            <views:PlotControl
+                SimT           ="{Binding SimT}"
+                SimTheta       ="{Binding SimTheta}"
+                YMin           ="{Binding PlotYMin}"
+                YMax           ="{Binding PlotYMax}"
+                XMax           ="{Binding PlotXMax}"
+                ThetaGoal      ="{Binding ThetaGoalValue}"
+                Title          ="{Binding TitleText}"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment  ="Stretch"/>
+        </Border>
+
+        <!-- ============== MIDDLE: parameter sliders ============== -->
+        <Border Grid.Row="1" BorderBrush="Gray" BorderThickness="1"
+                Padding="6,4" CornerRadius="2" Margin="0,6,0,4">
+            <StackPanel Spacing="2" TextElement.FontSize="12">
+
+                <!-- theta_start ∈ [0, 359] -->
+                <Grid ColumnDefinitions="90,*,115">
+                    <TextBlock Grid.Column="0" Text="theta_start" VerticalAlignment="Center"/>
+                    <Slider    Grid.Column="1" Minimum="0" Maximum="359"
+                               TickFrequency="1"
+                               Value="{Binding ThetaStart, Mode=TwoWay}"/>
+                    <NumericUpDown Grid.Column="2" Increment="0.1" Minimum="0" Maximum="359"
+                                   FormatString="0.0" Height="26" Padding="4,0"
+                                   Value="{Binding ThetaStart, Mode=TwoWay}"/>
+                </Grid>
+
+                <!-- theta_goal -->
+                <Grid ColumnDefinitions="90,*,115">
+                    <TextBlock Grid.Column="0" Text="theta_goal" VerticalAlignment="Center"/>
+                    <Slider    Grid.Column="1" Minimum="0" Maximum="359"
+                               TickFrequency="1"
+                               Value="{Binding ThetaGoal, Mode=TwoWay}"/>
+                    <NumericUpDown Grid.Column="2" Increment="0.1" Minimum="0" Maximum="359"
+                                   FormatString="0.0" Height="26" Padding="4,0"
+                                   Value="{Binding ThetaGoal, Mode=TwoWay}"/>
+                </Grid>
+
+                <!-- offset -->
+                <Grid ColumnDefinitions="90,*,115">
+                    <TextBlock Grid.Column="0" Text="offset" VerticalAlignment="Center"/>
+                    <Slider    Grid.Column="1" Minimum="0" Maximum="100"
+                               TickFrequency="0.01"
+                               Value="{Binding Offset, Mode=TwoWay}"/>
+                    <NumericUpDown Grid.Column="2" Increment="0.01" Minimum="0" Maximum="100"
+                                   FormatString="0.00" Height="26" Padding="4,0"
+                                   Value="{Binding Offset, Mode=TwoWay}"/>
+                </Grid>
+
+                <!-- time_length -->
+                <Grid ColumnDefinitions="90,*,115">
+                    <TextBlock Grid.Column="0" Text="time_length" VerticalAlignment="Center"/>
+                    <Slider    Grid.Column="1" Minimum="10" Maximum="2000"
+                               IsSnapToTickEnabled="True" TickFrequency="1"
+                               Value="{Binding TimeLength, Mode=TwoWay}"/>
+                    <NumericUpDown Grid.Column="2" Increment="1" Minimum="10" Maximum="2000"
+                                   FormatString="0" Height="26" Padding="4,0"
+                                   Value="{Binding TimeLength, Mode=TwoWay}"/>
+                </Grid>
+
+                <!-- kp -->
+                <Grid ColumnDefinitions="90,*,115">
+                    <TextBlock Grid.Column="0" Text="kp" VerticalAlignment="Center"/>
+                    <Slider    Grid.Column="1" Minimum="0" Maximum="1.5"
+                               TickFrequency="0.001"
+                               Value="{Binding Kp, Mode=TwoWay}"/>
+                    <NumericUpDown Grid.Column="2" Increment="0.001" Minimum="0" Maximum="1.5"
+                                   FormatString="0.000" Height="26" Padding="4,0"
+                                   Value="{Binding Kp, Mode=TwoWay}"/>
+                </Grid>
+
+                <!-- ki -->
+                <Grid ColumnDefinitions="90,*,115">
+                    <TextBlock Grid.Column="0" Text="ki" VerticalAlignment="Center"/>
+                    <Slider    Grid.Column="1" Minimum="0" Maximum="1.5"
+                               TickFrequency="0.001"
+                               Value="{Binding Ki, Mode=TwoWay}"/>
+                    <NumericUpDown Grid.Column="2" Increment="0.001" Minimum="0" Maximum="1.5"
+                                   FormatString="0.000" Height="26" Padding="4,0"
+                                   Value="{Binding Ki, Mode=TwoWay}"/>
+                </Grid>
+
+                <!-- kd -->
+                <Grid ColumnDefinitions="90,*,115">
+                    <TextBlock Grid.Column="0" Text="kd" VerticalAlignment="Center"/>
+                    <Slider    Grid.Column="1" Minimum="0" Maximum="1.5"
+                               TickFrequency="0.001"
+                               Value="{Binding Kd, Mode=TwoWay}"/>
+                    <NumericUpDown Grid.Column="2" Increment="0.001" Minimum="0" Maximum="1.5"
+                                   FormatString="0.000" Height="26" Padding="4,0"
+                                   Value="{Binding Kd, Mode=TwoWay}"/>
+                </Grid>
+
+                <!-- dt -->
+                <Grid ColumnDefinitions="90,*,115">
+                    <TextBlock Grid.Column="0" Text="dt" VerticalAlignment="Center"/>
+                    <Slider    Grid.Column="1" Minimum="0.01" Maximum="10"
+                               TickFrequency="0.01"
+                               Value="{Binding Dt, Mode=TwoWay}"/>
+                    <NumericUpDown Grid.Column="2" Increment="0.01" Minimum="0.01" Maximum="10"
+                                   FormatString="0.00" Height="26" Padding="4,0"
+                                   Value="{Binding Dt, Mode=TwoWay}"/>
+                </Grid>
+
+                <!-- integral_clamp (0 = off) -->
+                <Grid ColumnDefinitions="90,*,115">
+                    <TextBlock Grid.Column="0" Text="i_clamp (0=off)" VerticalAlignment="Center"/>
+                    <Slider    Grid.Column="1" Minimum="0" Maximum="5000"
+                               TickFrequency="10"
+                               Value="{Binding IntegralClamp, Mode=TwoWay}"/>
+                    <NumericUpDown Grid.Column="2" Increment="10" Minimum="0" Maximum="5000"
+                                   FormatString="0" Height="26" Padding="4,0"
+                                   Value="{Binding IntegralClamp, Mode=TwoWay}"/>
+                </Grid>
+
+                <!-- output_clamp (0 = off) -->
+                <Grid ColumnDefinitions="90,*,115">
+                    <TextBlock Grid.Column="0" Text="o_clamp (0=off)" VerticalAlignment="Center"/>
+                    <Slider    Grid.Column="1" Minimum="0" Maximum="100"
+                               TickFrequency="0.5"
+                               Value="{Binding OutputClamp, Mode=TwoWay}"/>
+                    <NumericUpDown Grid.Column="2" Increment="0.5" Minimum="0" Maximum="100"
+                                   FormatString="0.0" Height="26" Padding="4,0"
+                                   Value="{Binding OutputClamp, Mode=TwoWay}"/>
+                </Grid>
+            </StackPanel>
+        </Border>
+
+        <!-- ============== BOTTOM: buttons + status ============== -->
+        <Grid Grid.Row="2" ColumnDefinitions="Auto,Auto,*,Auto" Margin="2,4,2,2">
+            <Button Grid.Column="0" Content="Reset defaults"
+                    Margin="0,0,6,0" Click="OnResetClick"/>
+            <Button Grid.Column="1" Content="Run"
+                    Margin="0,0,6,0" Click="OnRunClick"/>
+            <TextBlock Grid.Column="3" VerticalAlignment="Center"
+                       FontFamily="Consolas, Menlo, monospace" FontSize="11"
+                       Text="{Binding StatusMessage}"/>
+        </Grid>
+    </Grid>
+</Window>
