@@ -1,0 +1,40 @@
+name: ci
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+
+jobs:
+  core:
+    name: C++ core (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure
+        run: cmake -S core -B core/build -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        run: cmake --build core/build --config Release -j
+
+      # The smoke test asserts every metric (ref length, step count, path/heading
+      # errors, yaw moment) against the Python reference, so this gates the
+      # "bit-for-bit reproduction" claim on every push.
+      - name: Test (smoke / Python-reference regression)
+        run: ctest --test-dir core/build -C Release --output-on-failure
+
+  python-frontend:
+    name: Python frontend (syntax)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Byte-compile the Python drop-ins
+        run: python -m py_compile frontend_python/track_core.py frontend_python/app_matplotlib.py frontend_python/app_pyside6.py
