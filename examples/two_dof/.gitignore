@@ -1,0 +1,28 @@
+# Build directories
+core/build/
+frontend_qt/build/
+frontend_avalonia/TdofAvalonia/bin/
+frontend_avalonia/TdofAvalonia/obj/
+
+# Python
+frontend_python/__pycache__/
+frontend_python/*.pyc
+*.egg-info/
+.venv/
+venv/
+dist/
+*.pyd
+
+# IDE / editor
+.vscode/
+.idea/
+*.user
+*.suo
+*.sdf
+
+# OS
+.DS_Store
+Thumbs.db
+
+# CMake
+CMakeUserPresets.json
