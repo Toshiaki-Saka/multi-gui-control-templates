@@ -1,0 +1,36 @@
+# ── Build artifacts ──────────────────────────────────────────────────────────
+build/
+**/build/
+out/
+
+# .NET / Avalonia
+**/bin/
+**/obj/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+.env
+
+# ── Binaries ─────────────────────────────────────────────────────────────────
+*.dll
+*.so
+*.dylib
+*.exe
+*.pdb
+*.lib
+*.a
+*.o
+*.obj
+
+# ── Presentations (kept local, never published) ──────────────────────────────
+*.pptx
+
+# ── Editor / OS ──────────────────────────────────────────────────────────────
+.vs/
+.idea/
+.DS_Store
+*.png.tmp
