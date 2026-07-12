@@ -69,12 +69,12 @@ must be freed by `msd_core_free_simulation()`.
   sub-step time so the midpoint evaluations of RK4 are accurate.
 - Time index is computed as `i * dt` (not accumulated with `+= dt`) to avoid
   drift from repeated floating-point addition.
-- `n = floor((stop + dt) / dt - ε) + 1` reproduces NumPy's
+- $n = \lfloor (stop + dt) / dt - \varepsilon \rfloor + 1$ reproduces NumPy's
   `arange(0, stop + dt, dt)` sample count.
 
 ### Smoke test (`tools/smoke_test.cpp`)
 
-Runs all five default cases and checks `|x(final) - expected| ≤ 1e-5`.
+Runs all five default cases and checks $|x(final) - expected| \le 10^{-5}$.
 Reference values were produced by the Python script using `scipy.odeint`.
 Tolerance is 1e-5; actual errors are ~10⁻⁸–10⁻⁷.
 
