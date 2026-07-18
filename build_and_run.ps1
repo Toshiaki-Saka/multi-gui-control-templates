@@ -105,6 +105,16 @@ switch ($Target) {
     }
 }
 
+# ── Qt6Config.cmake を含むディレクトリを探す ────────────────────────────────
+# vcpkg レイアウト   : <prefix>\share\Qt6\Qt6Config.cmake
+# 標準 Qt インストール: <prefix>\lib\cmake\Qt6\Qt6Config.cmake
+function Find-Qt6Dir([string]$prefix) {
+    foreach ($rel in @("share\Qt6", "lib\cmake\Qt6")) {
+        if (Test-Path "$prefix\$rel\Qt6Config.cmake") { return "$prefix\$rel" }
+    }
+    return $null
+}
+
 # ── Qt6 パスの自動検出 (全 example 共通で 1 回だけ) ──────────────────────────
 if ($LaunchQt -and -not $SkipBuild -and -not $Qt6Path) {
     $candidates = @(
@@ -114,7 +124,7 @@ if ($LaunchQt -and -not $SkipBuild -and -not $Qt6Path) {
         "C:\Qt\6.7.0\msvc2022_64"
     )
     foreach ($c in $candidates) {
-        if (Test-Path "$c\share\Qt6\Qt6Config.cmake") {
+        if (Find-Qt6Dir $c) {
             $Qt6Path = $c
             Write-Host "Qt6 を自動検出: $Qt6Path" -ForegroundColor DarkCyan
             break
@@ -123,6 +133,26 @@ if ($LaunchQt -and -not $SkipBuild -and -not $Qt6Path) {
     if (-not $Qt6Path) {
         Warn "Qt6 が見つかりません。-Qt6Path で指定するか Qt をインストールしてください。Qt6 のビルドはスキップします。"
     }
+}
+
+# ── Qt6 configure 用の追加引数を組み立てる ──────────────────────────────────
+# vcpkg の Qt6 は CMAKE_PREFIX_PATH だけでは解決できないため、Qt6_DIR を直接指定し、
+# vcpkg ツリーなら vcpkg ツールチェーンファイルと triplet も付与する。
+# ツールチェーン/Qt6_DIR は初回 configure 時のみ有効 (キャッシュ後は変更不可)。
+function Get-QtExtraArgs([string]$prefix, [string]$buildDir) {
+    $extra = @()
+    if (Test-Path "$buildDir\CMakeCache.txt") { return ,$extra }  # 既存キャッシュは触らない
+    $qt6dir = Find-Qt6Dir $prefix
+    if ($qt6dir) { $extra += "-DQt6_DIR=$qt6dir" }
+    # vcpkg ツリー判定: ...\vcpkg\installed\<triplet>
+    if ($prefix -match '^(?<root>.*\\vcpkg)\\installed\\(?<triplet>[^\\]+)') {
+        $tc = "$($Matches.root)\scripts\buildsystems\vcpkg.cmake"
+        if (Test-Path $tc) {
+            $extra += "-DCMAKE_TOOLCHAIN_FILE=$tc"
+            $extra += "-DVCPKG_TARGET_TRIPLET=$($Matches.triplet)"
+        }
+    }
+    return ,$extra
 }
 
 # ── cmake 共通ヘルパー ────────────────────────────────────────────────────────
@@ -195,8 +225,9 @@ function Invoke-Example([string]$slug) {
         if ($LaunchQt -and $Qt6Path) {
             Step "Qt6 フロントエンドをビルド中 ($BuildType)"
             Clear-StaleCmakeCache "$exRoot\frontend_qt\build" "$exRoot\frontend_qt"
-            $qtArgs = Get-CmakeConfigArgs "$exRoot\frontend_qt\build" $Qt6Path
-            cmake -S "$exRoot\frontend_qt" -B "$exRoot\frontend_qt\build" -DCMAKE_BUILD_TYPE=$BuildType @qtArgs
+            $qtArgs   = Get-CmakeConfigArgs "$exRoot\frontend_qt\build" $Qt6Path
+            $qtExtra  = Get-QtExtraArgs $Qt6Path "$exRoot\frontend_qt\build"
+            cmake -S "$exRoot\frontend_qt" -B "$exRoot\frontend_qt\build" -DCMAKE_BUILD_TYPE=$BuildType @qtArgs @qtExtra
             if ($LASTEXITCODE -ne 0) { Die "$slug Qt6 cmake configure 失敗" }
             cmake --build "$exRoot\frontend_qt\build" --config $BuildType -j
             if ($LASTEXITCODE -ne 0) { Die "$slug Qt6 cmake build 失敗" }
