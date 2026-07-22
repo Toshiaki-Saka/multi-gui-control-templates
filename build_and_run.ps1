@@ -166,6 +166,25 @@ function Clear-StaleCmakeCache($buildDir, $sourceDir) {
     }
 }
 
+# ── stale pwsh パスの検出 (vcpkg toolchain 用) ───────────────────────────────
+# vcpkg の CMake toolchain は configure 時に find_program(pwsh) の絶対パスを
+# CMakeCache (Z_VCPKG_POWERSHELL_PATH) と生成 vcxproj の post-build (applocal.ps1)
+# に焼き込む。PowerShell は WindowsApps 配下にバージョン別フォルダで入るため、
+# 更新されると旧パスが消え「指定されたパスが見つかりません」でビルドが失敗する。
+# find_program はキャッシュ済みパスを再検証しないので、パスが実在しなければ
+# ビルドディレクトリごと削除し、次回 configure で現行 pwsh を再検出させる。
+function Clear-StalePwshCache([string]$buildDir) {
+    $cache = "$buildDir\CMakeCache.txt"
+    if (-not (Test-Path $cache)) { return }
+    $line = (Get-Content $cache | Select-String "^Z_VCPKG_POWERSHELL_PATH").Line
+    if (-not $line) { return }
+    $p = ($line -replace '^[^=]*=', '').Trim()
+    if ($p -and -not (Test-Path $p)) {
+        Write-Host "    stale pwsh パスを検出 ($p)。$buildDir を再構成します。" -ForegroundColor DarkYellow
+        Remove-Item $buildDir -Recurse -Force
+    }
+}
+
 function Get-CmakeConfigArgs($buildDir, $prefixPath) {
     $result = @()
     if (-not (Test-Path "$buildDir\CMakeCache.txt")) {
@@ -224,6 +243,7 @@ function Invoke-Example([string]$slug) {
         # (2) Qt6
         if ($LaunchQt -and $Qt6Path) {
             Step "Qt6 フロントエンドをビルド中 ($BuildType)"
+            Clear-StalePwshCache  "$exRoot\frontend_qt\build"
             Clear-StaleCmakeCache "$exRoot\frontend_qt\build" "$exRoot\frontend_qt"
             $qtArgs   = Get-CmakeConfigArgs "$exRoot\frontend_qt\build" $Qt6Path
             $qtExtra  = Get-QtExtraArgs $Qt6Path "$exRoot\frontend_qt\build"
