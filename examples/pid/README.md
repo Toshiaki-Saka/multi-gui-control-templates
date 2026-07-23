@@ -215,4 +215,4 @@ const char*       pid_core_version(void);
 
 ## License
 
-[MIT](LICENSE) © 2026 Toshiaki Saka.
+[Apache-2.0](LICENSE) © 2026 Toshiaki Saka.

@@ -241,4 +241,4 @@ See [`docs/math.md`](docs/math.md) for:
 
 ## License
 
-[MIT](LICENSE)
+[Apache-2.0](LICENSE)

@@ -214,4 +214,4 @@ See [core/include/msd_core.h](core/include/msd_core.h) for the full API.
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+Apache-2.0 — see [LICENSE](LICENSE).

@@ -50,7 +50,7 @@ python gallery_app.py            # 4題材をドロップダウンで切替表�
 
 ## ライセンス
 
-MIT License — see [LICENSE](LICENSE).
+Apache License 2.0 — see [LICENSE](LICENSE).
 
 ---
 *このリポジトリは、旧 `pid` / `track` / `tdof` / `msd` の4リポジトリを統合・再構成したものです
