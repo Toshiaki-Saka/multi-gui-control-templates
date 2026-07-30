@@ -3,7 +3,7 @@
 ## 1. Coordinate Frame and State Variables
 
 The simulation uses a **right-hand planar frame**.
-Global axes $X$–$Y$ are fixed to the world; the body frame rotates with the vehicle heading $\psi$.
+Global axes $X$–$`Y`$ are fixed to the world; the body frame rotates with the vehicle heading $\psi$.
 
 | Symbol | Unit | Description |
 |--------|------|-------------|
@@ -146,7 +146,7 @@ k^* = \underset{k \;\in\; [\max(0,\; k_{\rm prev}-5),\; \min(N_{\rm ref},\; k_{\
       \left\|(x - x_{\rm ref}[k],\; y - y_{\rm ref}[k])\right\|_2
 $$
 
-The window $[k^*-5, k^*+120)$ prevents backward jumps while allowing the vehicle to advance quickly through the path.
+The window $`[k^*-5, k^*+120)`$ prevents backward jumps while allowing the vehicle to advance quickly through the path.
 
 ### Look-ahead Target
 

@@ -191,8 +191,8 @@ double track_core_sim_nmoment_max_abs(const TrackSimulation*);
 
 | Function | Definition |
 |----------|-----------|
-| `path_error_rms` | $\sqrt{\frac{1}{N}\sum\|\mathbf{p}_i - \mathbf{p}_{{\rm ref},i}\|^2}$ |
-| `path_error_max` | $\max_i \|\mathbf{p}_i - \mathbf{p}_{{\rm ref},i}\|$ |
+| `path_error_rms` | $`\sqrt{\frac{1}{N}\sum\|\mathbf{p}_i - \mathbf{p}_{{\rm ref},i}\|^2}`$ |
+| `path_error_max` | $`\max_i \|\mathbf{p}_i - \mathbf{p}_{{\rm ref},i}\|`$ |
 | `ey_rms` | $\sqrt{\frac{1}{N}\sum e_{y,i}^2}$ |
 | `ey_max_abs` | $\max_i \|e_{y,i}\|$ |
 | `epsi_rms` | $\sqrt{\frac{1}{N}\sum e_{\psi,i}^2}$ |

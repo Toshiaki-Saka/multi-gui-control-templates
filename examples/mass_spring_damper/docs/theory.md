@@ -91,7 +91,7 @@ demonstrates this effect.
 
 ## 3. State-space formulation
 
-Defining the state vector $\mathbf{z} = \begin{bmatrix} x \\ v \end{bmatrix}$
+Defining the state vector $`\mathbf{z} = \begin{bmatrix} x \\ v \end{bmatrix}`$
 where $v = \dot{x}$, the second-order ODE becomes a first-order system:
 
 $$\dot{\mathbf{z}} = \mathbf{A}\mathbf{z} + \mathbf{b}(t)$$
@@ -110,7 +110,7 @@ Initial conditions: $x(0) = x_0$, $v(0) = v_0$.
 
 ### 4.1 Algorithm
 
-Given state $\mathbf{z}_n$ at time $t_n$, the RK4 update to $t_{n+1} = t_n + h$ is:
+Given state $`\mathbf{z}_n`$ at time $t_n$, the RK4 update to $`t_{n+1} = t_n + h`$ is:
 
 $$\mathbf{k}_1 = h \cdot \mathbf{f}(t_n,\; \mathbf{z}_n)$$
 
