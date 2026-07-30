@@ -111,7 +111,7 @@ The same formula applies to the arc segment with $L = \pi/2$ and $\Delta s = \De
 Heading error requires wrapping $(\psi_r - \psi)$ to $(-\pi, \pi]$:
 
 $$
-\operatorname{wrap}_{(-\pi,\pi]}(\alpha)
+\mathrm{wrap}_{(-\pi,\pi]}(\alpha)
 = \Bigl((\alpha + \pi) \bmod 2\pi\Bigr) - \pi
 $$
 

@@ -171,7 +171,7 @@ This is the projection of the position error onto the reference normal direction
 **Heading error** — wrapped to $(-\pi, \pi]$:
 
 $$
-e_\psi = \operatorname{wrap}_{(-\pi,\pi]}\!\bigl(\psi_r - \psi\bigr)
+e_\psi = \mathrm{wrap}_{(-\pi,\pi]}\!\bigl(\psi_r - \psi\bigr)
 $$
 
 Positive $e_\psi$ means the reference heading points more counter-clockwise than the vehicle heading.
@@ -197,7 +197,7 @@ $$
 $$
 
 $$
-f_x = \operatorname{sat}\!\Bigl(100\; e_{\rm spd} + 0.1\; \sigma_{\rm spd},\; \pm f_{x,\rm lim}\Bigr)
+f_x = \mathrm{sat}\!\Bigl(100\; e_{\rm spd} + 0.1\; \sigma_{\rm spd},\; \pm f_{x,\rm lim}\Bigr)
 $$
 
 The P gain of 100 and I gain of 0.1 are hard-coded to match the Python reference.
@@ -207,11 +207,11 @@ The P gain of 100 and I gain of 0.1 are hard-coded to match the Python reference
 Integrators with anti-windup clamping:
 
 $$
-\sigma_y[k] = \operatorname{sat}\!\Bigl(\sigma_y[k-1] + e_y[k] \cdot t_c,\; \pm \sigma_{\rm lim}\Bigr)
+\sigma_y[k] = \mathrm{sat}\!\Bigl(\sigma_y[k-1] + e_y[k] \cdot t_c,\; \pm \sigma_{\rm lim}\Bigr)
 $$
 
 $$
-\sigma_\psi[k] = \operatorname{sat}\!\Bigl(\sigma_\psi[k-1] + e_\psi[k] \cdot t_c,\; \pm \sigma_{\rm lim}\Bigr)
+\sigma_\psi[k] = \mathrm{sat}\!\Bigl(\sigma_\psi[k-1] + e_\psi[k] \cdot t_c,\; \pm \sigma_{\rm lim}\Bigr)
 $$
 
 Moment command:
@@ -226,7 +226,7 @@ N_{\rm raw} =
 $$
 
 $$
-N = \operatorname{sat}(N_{\rm raw},\; \pm N_{\rm lim})
+N = \mathrm{sat}(N_{\rm raw},\; \pm N_{\rm lim})
 $$
 
 The $-k_{y,p} e_y$ term steers the vehicle toward the path; $+k_{\psi,p} e_\psi$ aligns the heading with the reference tangent; $-k_r r$ is a **yaw-rate damper** that suppresses oscillation on the arc.

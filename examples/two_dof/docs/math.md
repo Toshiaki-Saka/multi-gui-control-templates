@@ -175,14 +175,16 @@ improper part).
 
 The controllable canonical form is:
 
-$$A = \begin{pmatrix}
+```math
+A = \begin{pmatrix}
 0 & 1 & 0 & \cdots & 0 \\
 0 & 0 & 1 & \cdots & 0 \\
 \vdots & & & \ddots & \vdots \\
 0 & 0 & 0 & \cdots & 1 \\
 -a_n & -a_{n-1} & -a_{n-2} & \cdots & -a_1
 \end{pmatrix}, \quad
-B = \begin{pmatrix} 0 \\ 0 \\ \vdots \\ 0 \\ 1 \end{pmatrix}$$
+B = \begin{pmatrix} 0 \\ 0 \\ \vdots \\ 0 \\ 1 \end{pmatrix}
+```
 
 $$C = \begin{pmatrix} \tilde{b}_n & \tilde{b}_{n-1} & \cdots & \tilde{b}_1 \end{pmatrix}, \quad
 D = b_0$$
@@ -193,8 +195,10 @@ $$\dot{x}(t) = A\,x(t) + B\,u(t), \qquad y(t) = C\,x(t) + D\,u(t)$$
 
 For $G_{yz}$ with default parameters ($n = 3$, $D = 0$ since strictly proper):
 
-$$A = \begin{pmatrix} 0 & 1 & 0 \\ 0 & 0 & 1 \\ -1000 & -300 & -11.5 \end{pmatrix}, \quad
-B = \begin{pmatrix} 0 \\ 0 \\ 1 \end{pmatrix}$$
+```math
+A = \begin{pmatrix} 0 & 1 & 0 \\ 0 & 0 & 1 \\ -1000 & -300 & -11.5 \end{pmatrix}, \quad
+B = \begin{pmatrix} 0 \\ 0 \\ 1 \end{pmatrix}
+```
 
 $$C = \begin{pmatrix} 1000 & 200 & 10 \end{pmatrix}, \quad D = 0$$
 
@@ -232,19 +236,23 @@ matrix exponential of an **augmented** $(n+2)\times(n+2)$ matrix.
 
 Define:
 
-$$M = \begin{pmatrix}
+```math
+M = \begin{pmatrix}
 A\,\Delta t & B\,\Delta t & 0 \\
 0_{1\times n} & 0 & 1 \\
 0_{1\times n} & 0 & 0
-\end{pmatrix} \in \mathbb{R}^{(n+2)\times(n+2)}$$
+\end{pmatrix} \in \mathbb{R}^{(n+2)\times(n+2)}
+```
 
 Then:
 
-$$e^M = \begin{pmatrix}
+```math
+e^M = \begin{pmatrix}
 A_d & * & B_{d1} \\
 0 & 1 & * \\
 0 & 0 & 1
-\end{pmatrix}$$
+\end{pmatrix}
+```
 
 where $*$ denotes entries not used. Extract:
 

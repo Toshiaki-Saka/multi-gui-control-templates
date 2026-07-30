@@ -96,11 +96,15 @@ where $v = \dot{x}$, the second-order ODE becomes a first-order system:
 
 $$\dot{\mathbf{z}} = \mathbf{A}\mathbf{z} + \mathbf{b}(t)$$
 
-$$\mathbf{A} = \begin{bmatrix} 0 & 1 \\ -\dfrac{k}{m} & -\dfrac{c}{m} \end{bmatrix}, \qquad \mathbf{b}(t) = \begin{bmatrix} 0 \\ \dfrac{f(t)}{m} \end{bmatrix}$$
+```math
+\mathbf{A} = \begin{bmatrix} 0 & 1 \\ -\dfrac{k}{m} & -\dfrac{c}{m} \end{bmatrix}, \qquad \mathbf{b}(t) = \begin{bmatrix} 0 \\ \dfrac{f(t)}{m} \end{bmatrix}
+```
 
 Expanded:
 
-$$\begin{bmatrix} \dot{x} \\ \dot{v} \end{bmatrix} = \begin{bmatrix} 0 & 1 \\ -k/m & -c/m \end{bmatrix} \begin{bmatrix} x \\ v \end{bmatrix} + \begin{bmatrix} 0 \\ F\sin(\omega t)/m \end{bmatrix}$$
+```math
+\begin{bmatrix} \dot{x} \\ \dot{v} \end{bmatrix} = \begin{bmatrix} 0 & 1 \\ -k/m & -c/m \end{bmatrix} \begin{bmatrix} x \\ v \end{bmatrix} + \begin{bmatrix} 0 \\ F\sin(\omega t)/m \end{bmatrix}
+```
 
 Initial conditions: $x(0) = x_0$, $v(0) = v_0$.
 
