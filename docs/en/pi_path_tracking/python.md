@@ -1,5 +1,7 @@
 # Python Bindings
 
+[Module overview](README.md) · [theory](theory.md) · [C ABI](api.md) · [日本語](../../ja/pi_path_tracking/python.md)
+
 `frontend_python/track_core.py` wraps the C library via `ctypes`.
 It exposes three dataclasses (`TrackConfig`, `ReferencePath`, `Simulation`)
 and two top-level functions (`make_reference`, `simulate`).

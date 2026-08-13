@@ -1,5 +1,10 @@
 # Build Guide
 
+[Module overview](README.md) · [theory](theory.md) · [C ABI](api.md) · [日本語](../../ja/mass_spring_damper/build.md)
+
+> Paths on this page are relative to `examples/mass_spring_damper/`.
+> For building the whole repository at once see [../build-and-run.md](../build-and-run.md).
+
 ## 1. C++ core library
 
 The core has **no external dependencies** — only a C++17 compiler and CMake.
@@ -186,6 +191,10 @@ frontend (skipped gracefully if Qt6 is not found).
 
 Builds the C++ core and prints instructions for the Python and Avalonia
 frontends.
+
+> These are the per-example scripts in `examples/mass_spring_damper/`. The
+> repository-root `build_and_run.ps1` takes the example name as its first
+> argument instead (`.uild_and_run.ps1 msd 1`).
 
 ---
 

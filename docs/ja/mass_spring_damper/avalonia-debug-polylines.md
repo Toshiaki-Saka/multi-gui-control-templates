@@ -1,5 +1,7 @@
 # 信号線（Polyline）が表示されないときのトラブルシューティング
 
+[モジュール概要](README.md) · [Avalonia メモ](avalonia-notes.md) · [English](../../en/mass_spring_damper/avalonia-debug-polylines.md)
+
 このドキュメントは `MainWindow.axaml` の Series `ItemsControl` で Polyline が描画されない原因と対処法を体系的にまとめたものです。
 
 ---

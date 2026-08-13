@@ -1,5 +1,7 @@
 # Avalonia 11 Implementation Notes
 
+[Module overview](README.md) · [theory](theory.md) · [C ABI](api.md) · [日本語](../../ja/mass_spring_damper/avalonia-notes.md)
+
 Lessons learned while building the MSD Avalonia frontend.
 Each entry describes a pitfall and its solution.
 

@@ -1,5 +1,7 @@
 # C ABI Reference
 
+[Module overview](README.md) · [theory](theory.md) · [Python bindings](python.md) · [日本語](../../ja/pi_path_tracking/api.md)
+
 `track_core` exposes a pure-C interface so the library can be consumed from any
 language that supports FFI (C#, Python, Rust, …).  All symbols are decorated
 with `__declspec(dllexport)` on Windows and `__attribute__((visibility("default")))` on Linux/macOS.

@@ -29,7 +29,7 @@ multi-gui-control-templates/
 │   ├── two_dof/
 │   └── mass_spring_damper/
 ├── tests/                  # 4題材を横断シミュレートして健全性確認（CTest）
-└── docs/                   # 全ドキュメント（en/ ja/ = 横断、examples/ = 題材固有）
+└── docs/                   # 全ドキュメント（en/ と ja/、各言語にモジュール別フォルダ）
 ```
 
 各 core は `<name>_core_simulate()` 系の C ABI を公開し、ctypes（Python）/ P/Invoke（Avalonia）/
@@ -60,8 +60,17 @@ Windows では、ルートの `build_and_run.ps1` が「コア + 3フロント�
 | アルゴリズム詳細（4コアの導出と数値解法） | [docs/en/algorithms.md](docs/en/algorithms.md) | [docs/ja/algorithms.md](docs/ja/algorithms.md) |
 | C ABI リファレンス | [docs/en/c-abi-reference.md](docs/en/c-abi-reference.md) | [docs/ja/c-abi-reference.md](docs/ja/c-abi-reference.md) |
 
-題材固有の実装メモ（英語のみ）は [docs/examples/](docs/examples/) 配下にあります。
-ドキュメントはすべて [docs/](docs/) に集約されており、 `examples/` 配下には置いていません。
+モジュール別の詳細（理論・C ABI・実装メモ）は言語ごとにフォルダ分けしています。
+
+| モジュール | English | 日本語 |
+|---|---|---|
+| pid | [docs/en/pid/](docs/en/pid/README.md) | [docs/ja/pid/](docs/ja/pid/README.md) |
+| mass_spring_damper | [docs/en/mass_spring_damper/](docs/en/mass_spring_damper/README.md) | [docs/ja/mass_spring_damper/](docs/ja/mass_spring_damper/README.md) |
+| pi_path_tracking | [docs/en/pi_path_tracking/](docs/en/pi_path_tracking/README.md) | [docs/ja/pi_path_tracking/](docs/ja/pi_path_tracking/README.md) |
+| two_dof | [docs/en/two_dof/](docs/en/two_dof/README.md) | [docs/ja/two_dof/](docs/ja/two_dof/README.md) |
+
+ドキュメントはすべて [docs/](docs/) 配下（ `en/` と `ja/` の 2 言語）に集約されており、
+ `examples/` 配下には置いていません。
 
 ## ライセンス
 

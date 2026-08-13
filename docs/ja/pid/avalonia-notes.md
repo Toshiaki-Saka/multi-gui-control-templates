@@ -1,5 +1,7 @@
 # Avalonia 11 実装時の注意事項
 
+[モジュール概要](README.md) · [理論](theory.md) · [C ABI](api.md) · [English](../../en/pid/avalonia-notes.md)
+
 このプロジェクト（PID デモ / frontend_avalonia, pkg/pattern2_avalonia）で実際に踏んだ落とし穴と対処法のまとめ。
 
 ---

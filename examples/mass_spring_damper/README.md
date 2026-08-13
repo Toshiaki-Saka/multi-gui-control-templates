@@ -21,8 +21,8 @@ $$m\ddot{x} + c\dot{x} + kx = F\sin(\omega t)$$
 
 The C++ core integrates it with a fixed-step RK4 scheme, reproducing the
 Python reference (`scipy.integrate.odeint`) to within ~10⁻⁷ for the default
-cases. See [docs/en/algorithms.md](../../docs/en/algorithms.md#2-mass_spring_damper--forced-response-rk4)
-([日本語](../../docs/ja/algorithms.md#2-mass_spring_damper--強制応答rk4)) for the full derivation.
+cases. See [docs/en/mass_spring_damper/theory.md](../../docs/en/mass_spring_damper/theory.md)
+([日本語](../../docs/ja/mass_spring_damper/theory.md)) for the full derivation.
 
 ## Project structure
 
@@ -203,12 +203,16 @@ See [core/include/msd_core.h](core/include/msd_core.h) for the full API.
 
 | Document | Contents |
 |----------|---------|
-| [docs/en/algorithms.md §2](../../docs/en/algorithms.md#2-mass_spring_damper--forced-response-rk4) | Equation of motion, state-space form, RK4 derivation (LaTeX) — [日本語](../../docs/ja/algorithms.md#2-mass_spring_damper--強制応答rk4) |
-| [docs/examples/mass_spring_damper/architecture.md](../../docs/examples/mass_spring_damper/architecture.md) | Layer diagram, data flow, design decisions |
-| [docs/examples/mass_spring_damper/build.md](../../docs/examples/mass_spring_damper/build.md) | Detailed build and environment setup |
-| [docs/examples/mass_spring_damper/avalonia-notes.md](../../docs/examples/mass_spring_damper/avalonia-notes.md) | Avalonia 11 implementation tips |
+| [theory.md](../../docs/en/mass_spring_damper/theory.md) | Equation of motion, state-space form, RK4 derivation (LaTeX) |
+| [api.md](../../docs/en/mass_spring_damper/api.md) | `msd_core` C ABI reference |
+| [architecture.md](../../docs/en/mass_spring_damper/architecture.md) | Layer diagram, data flow, design decisions |
+| [build.md](../../docs/en/mass_spring_damper/build.md) | Detailed build and environment setup |
+| [avalonia-notes.md](../../docs/en/mass_spring_damper/avalonia-notes.md) | Avalonia 11 implementation tips |
+| [avalonia-debug-polylines.md](../../docs/en/mass_spring_damper/avalonia-debug-polylines.md) | Troubleshooting when plot polylines do not render |
 
-> All documentation now lives in the repository-level [`docs/`](../../docs/) tree.
+> All documentation lives under [`docs/`](../../docs/): English in
+> [`docs/en/mass_spring_damper/`](../../docs/en/mass_spring_damper/README.md), Japanese in
+> [`docs/ja/mass_spring_damper/`](../../docs/ja/mass_spring_damper/README.md).
 
 ## License
 

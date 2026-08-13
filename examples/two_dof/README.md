@@ -53,8 +53,8 @@ A unit-step reference `r` is applied in two ways:
 The comparison shows how reference pre-filtering (K2) reduces the aggressiveness
 of the commanded reference `z = K2·r` and reshapes the transient response.
 
-See [`docs/en/algorithms.md §4`](../../docs/en/algorithms.md#4-two_dof--2-dof-control-vs-pid)
-([日本語](../../docs/ja/algorithms.md#4-two_dof--2-自由度制御-vs-pid)) for a full mathematical derivation.
+See [`docs/en/two_dof/theory.md`](../../docs/en/two_dof/theory.md)
+([日本語](../../docs/ja/two_dof/theory.md)) for a full mathematical derivation.
 
 ---
 
@@ -228,8 +228,8 @@ Polynomial coefficients are **highest-power-first** throughout.
 
 ## Mathematical background
 
-See [`docs/en/algorithms.md §4`](../../docs/en/algorithms.md#4-two_dof--2-dof-control-vs-pid)
-([日本語](../../docs/ja/algorithms.md#4-two_dof--2-自由度制御-vs-pid)) for:
+See [`docs/en/two_dof/theory.md`](../../docs/en/two_dof/theory.md)
+([日本語](../../docs/ja/two_dof/theory.md)) for:
 
 - Plant model and transfer functions
 - Reference-filter derivation
