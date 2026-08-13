@@ -29,7 +29,7 @@ multi-gui-control-templates/
 │   ├── two_dof/
 │   └── mass_spring_damper/
 ├── tests/                  # 4題材を横断シミュレートして健全性確認（CTest）
-└── docs/                   # 各題材の導出 math
+└── docs/                   # 全ドキュメント（en/ ja/ = 横断、examples/ = 題材固有）
 ```
 
 各 core は `<name>_core_simulate()` 系の C ABI を公開し、ctypes（Python）/ P/Invoke（Avalonia）/
@@ -47,6 +47,21 @@ cd gui/python
 pip install -r requirements.txt
 python gallery_app.py            # 4題材をドロップダウンで切替表示
 ```
+
+Windows では、ルートの `build_and_run.ps1` が「コア + 3フロントエンドのビルド〜起動」を
+1コマンドで行います（`.\build_and_run.ps1 pid 1` で pid の Qt6 のみ、など）。
+
+## ドキュメント
+
+| ページ | English | 日本語 |
+|---|---|---|
+| ビルドと実行（`build_and_run.ps1` 完全リファレンス／全フロントエンドのコマンド） | [docs/en/build-and-run.md](docs/en/build-and-run.md) | [docs/ja/build-and-run.md](docs/ja/build-and-run.md) |
+| アーキテクチャ（1コア×3GUI パターン） | [docs/en/architecture.md](docs/en/architecture.md) | [docs/ja/architecture.md](docs/ja/architecture.md) |
+| アルゴリズム詳細（4コアの導出と数値解法） | [docs/en/algorithms.md](docs/en/algorithms.md) | [docs/ja/algorithms.md](docs/ja/algorithms.md) |
+| C ABI リファレンス | [docs/en/c-abi-reference.md](docs/en/c-abi-reference.md) | [docs/ja/c-abi-reference.md](docs/ja/c-abi-reference.md) |
+
+題材固有の実装メモ（英語のみ）は [docs/examples/](docs/examples/) 配下にあります。
+ドキュメントはすべて [docs/](docs/) に集約されており、 `examples/` 配下には置いていません。
 
 ## ライセンス
 

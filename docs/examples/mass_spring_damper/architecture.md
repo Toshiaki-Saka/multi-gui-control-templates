@@ -64,7 +64,8 @@ must be freed by `msd_core_free_simulation()`.
 
 ### Solver (`src/msd_core.cpp`)
 
-- Uses **fixed-step 4th-order Runge-Kutta** (see [theory.md](theory.md)).
+- Uses **fixed-step 4th-order Runge-Kutta** (see
+  [algorithms.md §2](../../en/algorithms.md#2-mass_spring_damper--forced-response-rk4)).
 - The derivative function `deriv()` evaluates the external force at the correct
   sub-step time so the midpoint evaluations of RK4 are accurate.
 - Time index is computed as `i * dt` (not accumulated with `+= dt`) to avoid

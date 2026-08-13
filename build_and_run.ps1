@@ -1,32 +1,174 @@
 # build_and_run.ps1  (統一シェル / ルート版)
-# --------------------------------------------------------------------------
-# examples/ 配下の各サンプル (mass_spring_damper / pi_path_tracking / pid /
+# ==========================================================================
+# examples/ 配下の 4 サンプル (mass_spring_damper / pi_path_tracking / pid /
 # two_dof) について、C/C++ コア (<slug>_core.dll)・Qt6・C# Avalonia・Python を
-# ビルドし、指定したフロントエンドを起動する。
+# ビルドし、指定したフロントエンドを起動する Windows 用ワンショットスクリプト。
 #
-# 各 example は共通の命名規則で導出できる:
+# 詳細ドキュメント:
+#   docs/ja/build-and-run.md   (日本語 / このスクリプトの完全リファレンス)
+#   docs/en/build-and-run.md   (English)
+#   docs/ja/algorithms.md      (各 example のアルゴリズム詳細)
+#   docs/en/algorithms.md
+#
+# --------------------------------------------------------------------------
+# 1. このスクリプトが行うこと (Example ごとに順番に実行)
+# --------------------------------------------------------------------------
+#   (0) 前処理  : 古い CMakeCache / stale な pwsh パスを検出して自動再構成
+#   (1) core    : examples/<dir>/core を cmake configure + build
+#                 → <slug>_core.dll を core\build\<BuildType>\ に生成し、
+#                   csproj が参照する core\build\ 直下にもコピー
+#   (2) Qt6     : examples/<dir>/frontend_qt を cmake configure + build
+#                 → <slug>_qt.exe を生成し、core dll をその横にコピー、
+#                   windeployqt で Qt DLL を配置、vcpkg 依存 DLL を補完
+#   (3) Avalonia: dotnet restore + dotnet build (net8.0)
+#                 → bin\<BuildType>\net8.0\<Proj>.exe、core dll をコピー
+#   (4) Python  : frontend_python\requirements.txt を pip install
+#   (5) 起動    : 選択したフロントエンドを Start-Process で別プロセス起動
+#                 Python 起動時は <SLUG>_CORE_LIB に dll の絶対パスを設定
+#
+# 前提ツール:
+#   cmake / Visual Studio 2022 (C++)  … core と Qt6 のビルドに必須
+#   Qt 6.2 以降 または vcpkg の qtbase … Qt6 フロントエンド (無ければ自動スキップ)
+#   .NET 8 SDK (dotnet)                … Avalonia フロントエンド
+#   Python 3.9 以降 (python)           … PySide6 フロントエンド
+#
+# --------------------------------------------------------------------------
+# 2. 命名規則 (Example ごとの成果物はすべて slug から導出される)
+# --------------------------------------------------------------------------
 #   core dll     = <slug>_core.dll        (例: pid_core.dll)
 #   Qt6 実行体   = <slug>_qt.exe          (例: pid_qt.exe)
 #   Avalonia proj= <Title>Avalonia        (例: PidAvalonia)
-#   Python env   = <SLUG>_CORE_LIB         (例: PID_CORE_LIB)
+#   Python env   = <SLUG>_CORE_LIB        (例: PID_CORE_LIB)
 #
-# 使い方:
-#   .\build_and_run.ps1                       # 全 example × 全フロントエンド
-#   .\build_and_run.ps1 pid                   # pid の全フロントエンド
-#   .\build_and_run.ps1 pid 1                 # pid の Qt6 のみ
-#   .\build_and_run.ps1 msd 3                 # mass_spring_damper の Python のみ
-#   .\build_and_run.ps1 all 2                 # 全 example の Avalonia のみ
-#   .\build_and_run.ps1 pid 1 -SkipBuild      # ビルドせず起動のみ
-#   .\build_and_run.ps1 -List                 # example 一覧を表示して終了
-#   .\build_and_run.ps1 tdof -BuildType Debug
-#   .\build_and_run.ps1 pid -Qt6Path "C:\Qt\6.8.0\msvc2022_64"
+#   slug   フルネーム            core dll         Qt6 exe        Avalonia
+#   -----  -------------------  ---------------  -------------  --------------
+#   msd    mass_spring_damper   msd_core.dll     msd_qt.exe     MsdAvalonia
+#   track  pi_path_tracking     track_core.dll   track_qt.exe   TrackAvalonia
+#   pid    pid                  pid_core.dll     pid_qt.exe     PidAvalonia
+#   tdof   two_dof              tdof_core.dll    tdof_qt.exe    TdofAvalonia
 #
-# Example 名は slug でもフルネームでも可:
-#   msd  = mass_spring_damper
-#   track= pi_path_tracking
-#   pid  = pid
-#   tdof = two_dof
+#   Example 名は slug でもフルネームでも指定可 (大文字小文字は区別しない):
+#     .\build_and_run.ps1 msd   ==   .\build_and_run.ps1 mass_spring_damper
+#
 # --------------------------------------------------------------------------
+# 3. パラメータ
+# --------------------------------------------------------------------------
+#   -Example <name>    対象 example。msd/track/pid/tdof/フルネーム/all
+#                      省略時は all (4 example すべて)。第 1 位置引数。
+#   -Target <0-3>      0(省略)=全フロントエンド, 1=Qt6, 2=Avalonia, 3=Python。
+#                      第 2 位置引数。
+#   -BuildType <cfg>   Release(既定) / Debug / RelWithDebInfo / MinSizeRel。
+#                      cmake --config と dotnet -c の両方に渡される。
+#   -Qt6Path <path>    Qt6 のインストール接頭辞。省略時は次の順で自動検出:
+#                        C:\vcpkg\installed\x64-windows
+#                        C:\Qt\6.9.0\msvc2022_64
+#                        C:\Qt\6.8.0\msvc2022_64
+#                        C:\Qt\6.7.0\msvc2022_64
+#                      見つからない場合、Qt6 のビルドのみスキップされる。
+#   -SkipBuild         ビルドを一切行わず、既存の成果物を起動するだけ。
+#   -SkipPyDeps        pip install (requirements.txt) をスキップ。
+#   -List              example 一覧を表示して終了 (ビルドも起動もしない)。
+#
+# --------------------------------------------------------------------------
+# 4. コマンド例 — 全機能 × 全フロントエンド
+# --------------------------------------------------------------------------
+# 4.1 基本
+#   .\build_and_run.ps1                       # 全 example × 全フロントエンド
+#   .\build_and_run.ps1 -List                 # example 一覧を表示して終了
+#   .\build_and_run.ps1 pid                   # pid の全フロントエンド
+#   .\build_and_run.ps1 mass_spring_damper    # フルネーム指定も可
+#
+# 4.2 Example × フロントエンド (Target: 1=Qt6 / 2=Avalonia / 3=Python)
+#   # --- pid : PID による 1 自由度姿勢制御 ---
+#   .\build_and_run.ps1 pid 1                 # Qt6      (pid_qt.exe)
+#   .\build_and_run.ps1 pid 2                 # Avalonia (PidAvalonia.exe)
+#   .\build_and_run.ps1 pid 3                 # Python   (app_pyside6.py)
+#   .\build_and_run.ps1 pid                   # 上記 3 つすべて
+#
+#   # --- track : PI 経路追従 (pi_path_tracking) ---
+#   .\build_and_run.ps1 track 1               # Qt6      (track_qt.exe)
+#   .\build_and_run.ps1 track 2               # Avalonia (TrackAvalonia.exe)
+#   .\build_and_run.ps1 track 3               # Python   (app_pyside6.py)
+#   .\build_and_run.ps1 pi_path_tracking      # 上記 3 つすべて
+#
+#   # --- tdof : 2 自由度制御 vs PID (two_dof) ---
+#   .\build_and_run.ps1 tdof 1                # Qt6      (tdof_qt.exe)
+#   .\build_and_run.ps1 tdof 2                # Avalonia (TdofAvalonia.exe)
+#   .\build_and_run.ps1 tdof 3                # Python   (app_pyside6.py)
+#   .\build_and_run.ps1 two_dof               # 上記 3 つすべて
+#
+#   # --- msd : 質量-ばね-ダンパ強制応答 (mass_spring_damper) ---
+#   .\build_and_run.ps1 msd 1                 # Qt6      (msd_qt.exe)
+#   .\build_and_run.ps1 msd 2                 # Avalonia (MsdAvalonia.exe)
+#   .\build_and_run.ps1 msd 3                 # Python   (app_pyside6.py)
+#   .\build_and_run.ps1 mass_spring_damper    # 上記 3 つすべて
+#
+#   # --- 全 example を 1 フロントエンドで横断 ---
+#   .\build_and_run.ps1 all 1                 # 4 example の Qt6 を一括
+#   .\build_and_run.ps1 all 2                 # 4 example の Avalonia を一括
+#   .\build_and_run.ps1 all 3                 # 4 example の Python を一括
+#
+# 4.3 ビルド構成の切り替え
+#   .\build_and_run.ps1 tdof -BuildType Debug          # Debug でビルド/起動
+#   .\build_and_run.ps1 all  -BuildType RelWithDebInfo
+#   .\build_and_run.ps1 pid 1 -Qt6Path "C:\Qt\6.8.0\msvc2022_64"
+#   .\build_and_run.ps1 pid 1 -Qt6Path "C:\vcpkg\installed\x64-windows"
+#
+# 4.4 ビルドの省略 / 高速化
+#   .\build_and_run.ps1 pid 1 -SkipBuild               # 起動のみ (再ビルドなし)
+#   .\build_and_run.ps1 all -SkipBuild                 # 全部を起動のみ
+#   .\build_and_run.ps1 msd 3 -SkipPyDeps              # pip install を省略
+#   .\build_and_run.ps1 all 3 -SkipPyDeps              # 依存導入済みの一括起動
+#   .\build_and_run.ps1 tdof -BuildType Debug -SkipPyDeps
+#
+# 4.5 名前付き引数での明示指定 (順不同で書ける)
+#   .\build_and_run.ps1 -Example track -Target 2
+#   .\build_and_run.ps1 -Example all -Target 1 -BuildType Release `
+#                       -Qt6Path "C:\Qt\6.9.0\msvc2022_64"
+#   .\build_and_run.ps1 -Example pid -Target 3 -SkipBuild -SkipPyDeps
+#
+# --------------------------------------------------------------------------
+# 5. 成果物の場所 (<ex> = examples\<フルネーム>, <cfg> = -BuildType)
+# --------------------------------------------------------------------------
+#   core dll  : <ex>\core\build\<cfg>\<slug>_core.dll
+#               <ex>\core\build\<slug>_core.dll            (csproj 参照用コピー)
+#   Qt6 exe   : <ex>\frontend_qt\build\<cfg>\<slug>_qt.exe
+#   Avalonia  : <ex>\frontend_avalonia\<Proj>\bin\<cfg>\net8.0\<Proj>.exe
+#   Python    : <ex>\frontend_python\app_pyside6.py  (GUI)
+#               <ex>\frontend_python\app_matplotlib.py (CLI/バッチ、本script対象外)
+#
+# --------------------------------------------------------------------------
+# 6. このスクリプトが扱わないもの (手動コマンド)
+# --------------------------------------------------------------------------
+#   # ルートの統合ビルド (4 コアを build\lib へ) と横断テスト
+#   cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+#   cmake --build build --config Release
+#   ctest --test-dir build --build-config Release --output-on-failure
+#
+#   # 共通 GUI ギャラリー (4 題材をドロップダウンで切替)
+#   cd gui\python
+#   pip install -r requirements.txt
+#   python gallery_app.py                      # 対話表示
+#   python gallery_app.py --example two_dof    # 1 題材だけ表示
+#   python gallery_app.py --save out.png       # 全題材をヘッドレス描画
+#
+#   # matplotlib 版フロントエンド (CSV/PNG 出力)
+#   python examples\pid\frontend_python\app_matplotlib.py
+#
+# --------------------------------------------------------------------------
+# 7. トラブルシューティング
+# --------------------------------------------------------------------------
+#   * "Qt6 が見つかりません"      : -Qt6Path で接頭辞を指定 (share\Qt6 または
+#                                   lib\cmake\Qt6 に Qt6Config.cmake がある階層)。
+#   * Qt6 exe が DLL 不足で起動しない: windeployqt が見つからない環境。Qt の
+#                                   bin\windeployqt.exe を PATH に通して再実行。
+#   * "指定されたパスが見つかりません" (vcpkg): PowerShell 更新で pwsh パスが
+#                                   陳腐化したケース。本スクリプトが自動検出して
+#                                   frontend_qt\build を再構成する。
+#   * Python 側で core dll が見つからない: -SkipBuild 時は既存 dll を探すだけ。
+#                                   先に core をビルドするか <SLUG>_CORE_LIB を
+#                                   手動で設定する。
+# ==========================================================================
 param(
     # example セレクタ: msd/track/pid/tdof/フルネーム/all(省略時=all)
     [string]$Example    = "all",

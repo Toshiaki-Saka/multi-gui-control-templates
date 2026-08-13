@@ -30,7 +30,7 @@ __pycache__/
 *.pyc
 *.pyo
 
-# Debug / scratch images (the README screenshot lives in docs/)
+# Debug / scratch images (the README screenshot lives in docs/examples/pid/)
 /bad*.png
 /error.png
 /good.png

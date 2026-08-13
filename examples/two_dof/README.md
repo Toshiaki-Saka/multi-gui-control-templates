@@ -53,7 +53,8 @@ A unit-step reference `r` is applied in two ways:
 The comparison shows how reference pre-filtering (K2) reduces the aggressiveness
 of the commanded reference `z = K2·r` and reshapes the transient response.
 
-See [`docs/math.md`](docs/math.md) for a full mathematical derivation.
+See [`docs/en/algorithms.md §4`](../../docs/en/algorithms.md#4-two_dof--2-dof-control-vs-pid)
+([日本語](../../docs/ja/algorithms.md#4-two_dof--2-自由度制御-vs-pid)) for a full mathematical derivation.
 
 ---
 
@@ -85,8 +86,6 @@ tdof/
 │   ├── Models/PlotSeries.cs
 │   ├── ViewModels/MainWindowViewModel.cs
 │   └── Views/MainWindow.{axaml,axaml.cs}
-├── docs/
-│   └── math.md                      # mathematical background (LaTeX)
 ├── build_all.sh                     # convenience build script (Linux/macOS)
 ├── build_and_run.ps1                # convenience build script (Windows)
 ├── LICENSE
@@ -229,7 +228,8 @@ Polynomial coefficients are **highest-power-first** throughout.
 
 ## Mathematical background
 
-See [`docs/math.md`](docs/math.md) for:
+See [`docs/en/algorithms.md §4`](../../docs/en/algorithms.md#4-two_dof--2-dof-control-vs-pid)
+([日本語](../../docs/ja/algorithms.md#4-two_dof--2-自由度制御-vs-pid)) for:
 
 - Plant model and transfer functions
 - Reference-filter derivation

@@ -21,7 +21,8 @@ $$m\ddot{x} + c\dot{x} + kx = F\sin(\omega t)$$
 
 The C++ core integrates it with a fixed-step RK4 scheme, reproducing the
 Python reference (`scipy.integrate.odeint`) to within ~10⁻⁷ for the default
-cases. See [docs/theory.md](docs/theory.md) for the full derivation.
+cases. See [docs/en/algorithms.md](../../docs/en/algorithms.md#2-mass_spring_damper--forced-response-rk4)
+([日本語](../../docs/ja/algorithms.md#2-mass_spring_damper--強制応答rk4)) for the full derivation.
 
 ## Project structure
 
@@ -48,11 +49,6 @@ msd/
 │       ├── Models/          # Avalonia data model types
 │       ├── ViewModels/      # MVVM ViewModel
 │       └── Views/           # AXAML layout + code-behind
-├── docs/                    # Documentation
-│   ├── theory.md            # Physics and numerical method (with LaTeX)
-│   ├── architecture.md      # System design
-│   ├── build.md             # Detailed build instructions
-│   └── avalonia-notes.md    # Avalonia 11 implementation tips
 ├── build_all.sh             # One-shot build (Linux / macOS)
 ├── build_all.bat            # One-shot build (Windows, MSVC)
 └── build_and_run.ps1        # Build + launch helper (Windows PowerShell)
@@ -207,10 +203,12 @@ See [core/include/msd_core.h](core/include/msd_core.h) for the full API.
 
 | Document | Contents |
 |----------|---------|
-| [docs/theory.md](docs/theory.md) | Equation of motion, state-space form, RK4 derivation (LaTeX) |
-| [docs/architecture.md](docs/architecture.md) | Layer diagram, data flow, design decisions |
-| [docs/build.md](docs/build.md) | Detailed build and environment setup |
-| [docs/avalonia-notes.md](docs/avalonia-notes.md) | Avalonia 11 implementation tips |
+| [docs/en/algorithms.md §2](../../docs/en/algorithms.md#2-mass_spring_damper--forced-response-rk4) | Equation of motion, state-space form, RK4 derivation (LaTeX) — [日本語](../../docs/ja/algorithms.md#2-mass_spring_damper--強制応答rk4) |
+| [docs/examples/mass_spring_damper/architecture.md](../../docs/examples/mass_spring_damper/architecture.md) | Layer diagram, data flow, design decisions |
+| [docs/examples/mass_spring_damper/build.md](../../docs/examples/mass_spring_damper/build.md) | Detailed build and environment setup |
+| [docs/examples/mass_spring_damper/avalonia-notes.md](../../docs/examples/mass_spring_damper/avalonia-notes.md) | Avalonia 11 implementation tips |
+
+> All documentation now lives in the repository-level [`docs/`](../../docs/) tree.
 
 ## License
 

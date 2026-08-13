@@ -45,10 +45,11 @@ all handle Windows conventions (DLL next to the .exe, MSVC
 
 | Document | Contents |
 |----------|---------|
-| [docs/model.md](docs/model.md) | Vehicle dynamics, reference path geometry, error definitions, PI controller equations |
-| [docs/numerics.md](docs/numerics.md) | Per-state RK4 integration, why it collapses to Euler, reference-path sampling |
-| [docs/api.md](docs/api.md) | Complete C ABI reference with all function signatures and a usage example |
-| [docs/python.md](docs/python.md) | Python bindings guide with `TrackConfig`, `Simulation` fields, and code examples |
+| [docs/en/algorithms.md §3](../../docs/en/algorithms.md#3-pi_path_tracking--pi-path-following) | Vehicle dynamics, reference path geometry, error definitions, PI controller equations, per-state RK4 and why it collapses to Euler — [日本語](../../docs/ja/algorithms.md#3-pi_path_tracking--pi-経路追従) |
+| [docs/examples/pi_path_tracking/api.md](../../docs/examples/pi_path_tracking/api.md) | Complete C ABI reference with all function signatures and a usage example |
+| [docs/examples/pi_path_tracking/python.md](../../docs/examples/pi_path_tracking/python.md) | Python bindings guide with `TrackConfig`, `Simulation` fields, and code examples |
+
+> All documentation now lives in the repository-level [`docs/`](../../docs/) tree.
 
 ---
 

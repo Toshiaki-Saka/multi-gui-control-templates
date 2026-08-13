@@ -23,7 +23,7 @@ All three frontends provide a slider-driven interactive UI: drag the
 PID gains, the start / goal angles, the offset, or the simulation
 length and watch the response plot update live.
 
-![PID interactive demo](docs/screenshot.png)
+![PID interactive demo](../../docs/examples/pid/screenshot.png)
 
 This repository is the **minimal "one core, three GUIs" template** of the
 family — it focuses on the cross-language wiring (a stable C ABI driven from
@@ -62,9 +62,6 @@ pid/
 │   ├── ViewModels/MainWindowViewModel.cs
 │   ├── Views/MainWindow.{axaml,axaml.cs}
 │   ├── App.axaml{,.cs}, Program.cs, app.manifest
-├── docs/
-│   ├── screenshot.png              # PID interactive demo (Python frontend)
-│   └── avalonia-notes.md           # Avalonia 11 gotchas (DLL search, P/Invoke)
 ├── build_all.sh
 ├── LICENSE
 └── README.md
@@ -209,7 +206,12 @@ const char*       pid_core_version(void);
 
 ## Documentation
 
-- [`docs/avalonia-notes.md`](docs/avalonia-notes.md) — Avalonia 11 gotchas
+All documentation lives in the repository-level [`docs/`](../../docs/) tree.
+
+- [`docs/en/algorithms.md §1`](../../docs/en/algorithms.md#1-pid--pid-attitude-control)
+  ([日本語](../../docs/ja/algorithms.md#1-pid--pid-姿勢制御)) — control law, exact
+  execution order, anti-windup and clamp behaviour, stability of the accumulator plant.
+- [`docs/examples/pid/avalonia-notes.md`](../../docs/examples/pid/avalonia-notes.md) — Avalonia 11 gotchas
   encountered building the C# frontend (native DLL search path, P/Invoke
   signatures, rendering quirks).
 
