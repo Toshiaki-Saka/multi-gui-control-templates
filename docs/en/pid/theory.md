@@ -117,10 +117,16 @@ $`\texttt{time\_length} \ge 2`$.
 | `integral_clamp` | 0 | disabled |
 | `output_clamp` | 0 | disabled |
 
-The defaults give a gentle, well-damped rise. The Python reference uses the more
-aggressive $k_p = 0.10$, $k_i = 0.5$, $k_d = 0.5$, which overshoots to
-$\theta \approx 135$ before settling at 90 — that is the response in the README
-screenshot and the one the smoke test pins.
+The defaults still overshoot: measured from the app, the response peaks at
+$\theta = 117.651$ (about 31 %) and settles at $\theta = 89.983$. That is the
+state shown in the [screenshot](screenshot.png). The header comment in
+`pid_core.h` calls this configuration "gentle, well-damped", which understates
+it — the integral term alone is enough to make the loop second-order and
+overshoot.
+
+The Python reference uses the more aggressive $k_p = 0.10$, $k_i = 0.5$,
+$k_d = 0.5$, which overshoots to $\theta \approx 135$ before settling at 90.
+That is the response the smoke test pins.
 
 Because the plant is an accumulator (a discrete integrator), the loop is a
 first-order system in $k_p$: the pole is at $1 - k_p$ per step, so
